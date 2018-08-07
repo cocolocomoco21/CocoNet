@@ -1,0 +1,10 @@
+.gradle
+.metadata
+.settings
+.vscode
+bin
+build
+.classpath
+.project
+gradle
+gradlew*
