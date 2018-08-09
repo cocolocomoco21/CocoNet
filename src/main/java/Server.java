@@ -19,9 +19,9 @@ public class Server {
     
     static final String CONTENT_TYPE_JSON = "application/json";
     static Gson gson = new Gson();
-    private Server server;
 
     private Map<String, Peer> ipToPeerMap;
+    private String serverIPAddress = "192.168.1.3";
 
 
     private Server() {
@@ -45,6 +45,9 @@ public class Server {
         };
     }
 
+    /**
+     * Attempt to register a Peer, handle the POST request to do so.  
+     */
     private boolean registerPeer(Request request, Response response) {
         response.type(CONTENT_TYPE_JSON);
 
@@ -58,11 +61,12 @@ public class Server {
             // Don't accept re-registrations
             return false;
         }
-        
-        // Ping ip to verify connection
-        // TODO
 
-        Peer peer = new Peer(registration);
+        // TODO check request IP vs param IP?
+
+        // TODO Ping ip to verify connection?
+
+        Peer peer = new Peer(registration, serverIPAddress);
         this.ipToPeerMap.put(ipAddress, peer);
 
         System.out.println(this.ipToPeerMap);
@@ -70,6 +74,9 @@ public class Server {
         return true;
     }
 
+    /**
+     * Fetch list of currently connected Peers.
+     */
     private List<Peer> fetchPeers(Request request, Response response) {
         response.type(CONTENT_TYPE_JSON);
 
