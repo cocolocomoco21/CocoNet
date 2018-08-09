@@ -8,9 +8,20 @@ import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpHeader;
 
+import spark.RouteGroup;
+import spark.Spark;
+
+import static spark.Spark.before;
+import static spark.Spark.get;
+import static spark.Spark.path;
+import static spark.Spark.port;
+import static spark.Spark.post;
+
+
 
 public class Peer {
     static final String CONTENT_TYPE_JSON = "application/json";
+    static Gson gson = new Gson();
 
     @Expose
     String ipAddress;
@@ -29,6 +40,18 @@ public class Peer {
         
         // Fetch peers
         peer.fetchPeers();
+
+        // Open peer on port 4568, since the default (4567) is used by server
+        port(4568);
+        path("/peer", peer.routes());
+    }
+
+    private RouteGroup routes() {
+        return () ->  {
+            before("/*", (request, response) -> System.out.println("endpoint: " + request.pathInfo()));
+            //post("/register", this::registerPeer, gson::toJson);
+            get("/", this::test, gson::toJson);
+        };
     }
     
     /**
@@ -56,6 +79,12 @@ public class Peer {
         this.ipAddress = registration.getIPAddress();
         this.friendlyName = registration.getFriendlyName();
     }
+
+
+    private String test(spark.Request request, spark.Response response) {
+        return "TEST";
+    }
+
 
     /**
      * Register Peer with server by POSTing to the server's registration endpoint.
