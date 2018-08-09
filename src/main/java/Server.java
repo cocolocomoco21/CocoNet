@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import spark.Request;
@@ -12,12 +11,14 @@ import static spark.Spark.path;
 import static spark.Spark.post;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Server {
     
     static final String CONTENT_TYPE_JSON = "application/json";
-    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    static Gson gson = new Gson();
     private Server server;
 
     private Map<String, Peer> ipToPeerMap;
@@ -40,7 +41,7 @@ public class Server {
         return () ->  {
             before("/*", (request, response) -> System.out.println("endpoint: " + request.pathInfo()));
             post("/register", this::registerPeer, gson::toJson);
-            get("/", (request, response) -> "GET to fetch");
+            get("/", this::fetchPeers, gson::toJson);
         };
     }
 
@@ -69,4 +70,12 @@ public class Server {
         return true;
     }
 
+    private List<Peer> fetchPeers(Request request, Response response) {
+        response.type(CONTENT_TYPE_JSON);
+
+        List<Peer> peers = ipToPeerMap.values().stream().collect(Collectors.toList());
+        System.out.println("Returning peers: " + peers);
+
+        return peers;
+    }
 }
