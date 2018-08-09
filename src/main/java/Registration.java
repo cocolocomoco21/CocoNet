@@ -12,8 +12,9 @@ public class Registration {
     String friendlyName;
 
 
-    public Registration() {
-
+    public Registration(String ipAddress, String friendlyName) {
+        this.ipAddress = ipAddress;
+        this.friendlyName = friendlyName;
     }
 
     public boolean validate() {
