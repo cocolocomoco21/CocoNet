@@ -9,14 +9,12 @@ import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpHeader;
 
 import spark.RouteGroup;
-import spark.Spark;
 
 import static spark.Spark.before;
 import static spark.Spark.get;
 import static spark.Spark.path;
 import static spark.Spark.port;
 import static spark.Spark.post;
-
 
 
 public class Peer {
@@ -35,15 +33,23 @@ public class Peer {
     public static void main(String[] args) {
         Peer peer = new Peer("Matt's Lenovo", "http://localhost:4567/server/register");
         
-        // Register with server
-        peer.registerWithServer();
-        
-        // Fetch peers
-        peer.fetchPeers();
-
         // Open peer on port 4568, since the default (4567) is used by server
         port(4568);
         path("/peer", peer.routes());
+
+
+        ///////////////////////////////
+        // Below are scenarios that a peer could do. Comment/uncomment for testing as necessary
+        ///////////////////////////////
+
+        // Register with server
+        peer.registerWithServer();
+                
+        // Fetch peers
+        peer.fetchPeers();
+
+        // Request to a peer
+        peer.requestFromPeer("http://192.168.1.11:4568");
     }
 
     private RouteGroup routes() {
