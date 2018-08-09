@@ -1,5 +1,7 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import spark.Request;
 import spark.Response;
 import spark.RouteGroup;
@@ -40,6 +42,12 @@ public class Server {
 
     private boolean registerPeer(Request request, Response response) {
         response.type(CONTENT_TYPE_JSON);
+
+        Registration registration = gson.fromJson(request.body(), new TypeToken<Registration>() {}.getType());
+        if (!registration.validate()) {
+            return false;
+        }
+
         return true;
     }
 
