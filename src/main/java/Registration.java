@@ -1,7 +1,7 @@
-import java.net.Inet4Address;
 import java.net.InetAddress;
 
 import com.google.gson.annotations.Expose;
+
 
 public class Registration {
 
@@ -38,5 +38,13 @@ public class Registration {
 
         System.out.println("Registration validated");
         return true;
+    }
+
+    public String getIPAddress() {
+        return this.ipAddress;
+    }
+
+    public String getFriendlyName() {
+        return this.friendlyName;
     }
 }
