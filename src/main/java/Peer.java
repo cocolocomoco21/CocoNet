@@ -138,6 +138,23 @@ public class Peer {
         }
     }
 
+    private void requestFromPeer(String URI) {
+        try {
+            // Send registration to server
+            HttpClient client = new HttpClient();
+            client.start();
+    
+            ContentResponse resp = client.GET(URI + "/peer/");
+
+            System.out.println("Response: " + resp.toString());
+            System.out.println("Content: " + resp.getContentAsString());
+           
+        } catch (Exception e) {
+            // TODO this can be better
+            System.out.println(e.getMessage());
+        }
+    }
+
     @Override
     public String toString() {
         return this.ipAddress + ", " + this.friendlyName;
