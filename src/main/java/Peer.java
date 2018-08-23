@@ -14,7 +14,6 @@ import static spark.Spark.before;
 import static spark.Spark.get;
 import static spark.Spark.path;
 import static spark.Spark.port;
-import static spark.Spark.post;
 
 
 public class Peer {
@@ -30,40 +29,10 @@ public class Peer {
     String serverIPAddress = "";
 
 
-    public static void main(String[] args) {
-        Peer peer = new Peer("Matt's Lenovo", "http://localhost:4567/server/register");
-        
-        // Open peer on port 4568, since the default (4567) is used by server
-        port(4568);
-        path("/peer", peer.routes());
-
-
-        ///////////////////////////////
-        // Below are scenarios that a peer could do. Comment/uncomment for testing as necessary
-        ///////////////////////////////
-
-        // Register with server
-        peer.registerWithServer();
-                
-        // Fetch peers
-        peer.fetchPeers();
-
-        // Request to a peer
-        peer.requestFromPeer("http://192.168.1.11:4568");
-    }
-
-    private RouteGroup routes() {
-        return () ->  {
-            before("/*", (request, response) -> System.out.println("endpoint: " + request.pathInfo()));
-            //post("/register", this::registerPeer, gson::toJson);
-            get("/", this::test, gson::toJson);
-        };
-    }
-    
     /**
      * Contruct Peer, where the Peer's IP is fetched from the machine. 
      */
-    private Peer(String friendlyName, String serverIPAddress) {
+    Peer(String friendlyName, String serverIPAddress) {
         this.friendlyName = friendlyName;
         this.serverIPAddress = serverIPAddress;
         
@@ -76,6 +45,8 @@ public class Peer {
             //return false;
             System.out.println("Invalid IP");
         }
+
+        initializeRouting(4568);
     }
 
     /**
@@ -84,18 +55,31 @@ public class Peer {
     public Peer(Registration registration, String serverIPAddress) {
         this.ipAddress = registration.getIPAddress();
         this.friendlyName = registration.getFriendlyName();
+        this.serverIPAddress = serverIPAddress;
     }
 
-
-    private String test(spark.Request request, spark.Response response) {
-        return "TEST";
+    private RouteGroup routes() {
+        return () ->  {
+            before("/*", (request, response) -> System.out.println("endpoint: " + request.pathInfo()));
+            //`post("/register", this::registerPeer, gson::toJson);
+            get("/name", this::getName, gson::toJson);
+        };
     }
 
+    private String getName(spark.Request request, spark.Response response) {
+        return this.friendlyName;
+    }
+
+    private void initializeRouting(int port) {
+        // Open peer on port 4568, since the default (4567) is used by server
+        port(port);
+        path("/peer", this.routes());
+    }
 
     /**
      * Register Peer with server by POSTing to the server's registration endpoint.
      */
-    private void registerWithServer() {
+    public void registerWithServer() {
         // Make registration packet
         Registration registrationPacket = new Registration(this.ipAddress, this.friendlyName);
         String json = new Gson().toJson(registrationPacket);
@@ -125,7 +109,7 @@ public class Peer {
     /**
      * Fetch the list of connected peers from the server. 
      */
-    private void fetchPeers() {
+    public void fetchPeers() {
         try {
             // Send registration to server
             HttpClient client = new HttpClient();
@@ -144,7 +128,10 @@ public class Peer {
         }
     }
 
-    private void requestFromPeer(String URI) {
+    /**
+     * Make a request to a peer registered on a specified URI.
+     */
+    public void requestFromPeer(String URI) {
         try {
             // Send registration to server
             HttpClient client = new HttpClient();
