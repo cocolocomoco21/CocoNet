@@ -8,6 +8,7 @@ import spark.RouteGroup;
 import static spark.Spark.before;
 import static spark.Spark.get;
 import static spark.Spark.path;
+import static spark.Spark.port;
 import static spark.Spark.post;
 
 import java.util.HashMap;
@@ -21,20 +22,13 @@ public class Server {
     static Gson gson = new Gson();
 
     private Map<String, Peer> ipToPeerMap;
-    private String serverIPAddress = "192.168.1.3";
+    private String serverIPAddress = "";
 
 
-    private Server() {
+    Server(String serverIPAddress) {
+        this.serverIPAddress = serverIPAddress;
         this.ipToPeerMap = new HashMap<String, Peer>();
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Starting server");
-
-        Server server = new Server();
-        path("/server", server.routes());
-
-        System.out.println("Server running...");
+        initializeRouting(4567);
     }
 
     private RouteGroup routes() {
@@ -43,6 +37,11 @@ public class Server {
             post("/register", this::registerPeer, gson::toJson);
             get("/", this::fetchPeers, gson::toJson);
         };
+    }
+
+    private void initializeRouting(int port) {
+        port(port);
+        path("/server", this.routes());
     }
 
     /**

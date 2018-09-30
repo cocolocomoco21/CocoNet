@@ -1,11 +1,10 @@
-import static spark.Spark.path;
-import static spark.Spark.port;
-import static spark.Spark.post;
-
-
 public class PeerRunner {
+    private static String friendlyName = "Matt's Lenovo";
+    private static String ipAddress = "http://192.168.1.4:4567/server/register";
+
     public static void main(String[] args) {
-        Peer peer = new Peer("Matt's Lenovo", "http://localhost:4567/server/register");        
+        
+        Peer peer = new Peer(friendlyName, ipAddress);        
     
         ///////////////////////////////
         // Below are scenarios that a peer could do. Comment/uncomment for testing as necessary
