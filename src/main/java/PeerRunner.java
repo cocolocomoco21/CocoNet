@@ -1,6 +1,6 @@
 public class PeerRunner {
     private static String friendlyName = "Matt's Lenovo";
-    private static String ipAddress = "http://192.168.1.4:4567/server/register";
+    private static String ipAddress = "http://192.168.1.4:4567";
 
     public static void main(String[] args) {
         
@@ -12,14 +12,17 @@ public class PeerRunner {
 
         // Register with server
         peer.registerWithServer();
-                
+        System.out.println("Finished registering with server\n");        
+
         // Fetch peers
         peer.fetchPeers();
+        System.out.println("Finished fetching peers\n");
 
         // Request to a peer
         peer.requestFromPeer("http://192.168.1.11:4568");
+        System.out.println("Finished requesting from peer\n");
 
-        System.out.println("done");
+        System.out.println("Peer running...");
 
     }
 }

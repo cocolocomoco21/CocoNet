@@ -89,16 +89,18 @@ public class Peer {
             HttpClient client = new HttpClient();
             client.start();
     
-            Request request = client.POST(this.serverIPAddress)
+            String url = Utilities.formURL(this.serverIPAddress, Endpoint.SERVER_REGISTER);
+            System.out.println("Registering with server (" + url + ")...");
+
+            Request request = client.POST(url)
                 .header(HttpHeader.ACCEPT, CONTENT_TYPE_JSON)
                 .header(HttpHeader.CONTENT_TYPE, CONTENT_TYPE_JSON)
                 .content(new StringContentProvider(json), CONTENT_TYPE_JSON);
 
-            System.out.println("Registration sent to server");
-
-            Response resp = request.send();
+            ContentResponse resp = request.send();
 
             System.out.println("Response: " + resp.toString());
+            System.out.println("Content: " + resp.getContentAsString());
            
         } catch (Exception e) {
             // TODO this can be better
@@ -115,9 +117,10 @@ public class Peer {
             HttpClient client = new HttpClient();
             client.start();
     
-            System.out.println("Fetching peers...");
+            String url = Utilities.formURL(this.serverIPAddress, Endpoint.SERVER_FETCH_PEERS);
+            System.out.println("Fetching peers (" + url + ")...");
 
-            ContentResponse resp = client.GET("http://localhost:4567/server/");
+            ContentResponse resp = client.GET(url);
 
             System.out.println("Response: " + resp.toString());
             System.out.println("Content: " + resp.getContentAsString());
@@ -131,13 +134,16 @@ public class Peer {
     /**
      * Make a request to a peer registered on a specified URI.
      */
-    public void requestFromPeer(String URI) {
+    public void requestFromPeer(String peerUrl) {
         try {
             // Send registration to server
             HttpClient client = new HttpClient();
             client.start();
-    
-            ContentResponse resp = client.GET(URI + "/peer/");
+
+            String url = Utilities.formURL(peerUrl, Endpoint.PEER_REQUEST);
+            System.out.println("Requesting from peer (" + url + ")...");
+
+            ContentResponse resp = client.GET(url);
 
             System.out.println("Response: " + resp.toString());
             System.out.println("Content: " + resp.getContentAsString());
