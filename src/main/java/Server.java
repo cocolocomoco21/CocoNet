@@ -55,18 +55,23 @@ public class Server {
             return false;
         }
 
-        String ipAddress = registration.getIPAddress();
-        if (this.ipToPeerMap.containsKey(ipAddress)) {
-            // Don't accept re-registrations
+        String registrationIp = registration.getIPAddress();
+        String requestIp = request.ip();
+        
+        // Invalid attempted registration
+        if (registrationIp != requestIp) {
             return false;
         }
 
-        // TODO check request IP vs param IP?
+        // Already registered - don't accept re-registrations
+        if (this.ipToPeerMap.containsKey(registrationIp)) {
+            return false;
+        }
 
         // TODO Ping ip to verify connection?
 
         Peer peer = new Peer(registration, serverIPAddress);
-        this.ipToPeerMap.put(ipAddress, peer);
+        this.ipToPeerMap.put(registrationIp, peer);
 
         System.out.println(this.ipToPeerMap);
 

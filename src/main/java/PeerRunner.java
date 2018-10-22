@@ -1,10 +1,10 @@
 public class PeerRunner {
     private static String friendlyName = "Matt's Lenovo";
-    private static String ipAddress = "http://192.168.1.4:4567";
+    private static String serverIpAddress = "http://192.168.1.4:4567";
 
     public static void main(String[] args) {
         
-        Peer peer = new Peer(friendlyName, ipAddress);        
+        Peer peer = new Peer(friendlyName, serverIpAddress);        
     
         ///////////////////////////////
         // Below are scenarios that a peer could do. Comment/uncomment for testing as necessary
