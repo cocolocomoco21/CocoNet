@@ -28,6 +28,7 @@ public class Peer {
 
     String serverIPAddress = "";
 
+    int port = 4568;
 
     /**
      * Contruct Peer, where the Peer's IP is fetched from the machine. 
@@ -46,7 +47,7 @@ public class Peer {
             System.out.println("Invalid IP");
         }
 
-        initializeRouting(4568);
+        initializeRouting(this.port);
     }
 
     /**
@@ -81,7 +82,7 @@ public class Peer {
      */
     public void registerWithServer() {
         // Make registration packet
-        Registration registrationPacket = new Registration(this.ipAddress, this.friendlyName);
+        Registration registrationPacket = new Registration(this.ipAddress, this.port, this.friendlyName);
         String json = new Gson().toJson(registrationPacket);
 
         try {
