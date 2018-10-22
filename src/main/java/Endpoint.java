@@ -8,5 +8,6 @@ public class Endpoint {
     // Peer constants
     private final static String PEER_RESOURCE_PATH = "/peer";
     public final static String PEER_REQUEST = PEER_RESOURCE_PATH + "/"; //TODO clarify what fetching from peer will look like
+    public final static String PEER_HEARTBEAT = PEER_RESOURCE_PATH + "/heartbeat";
 
 }

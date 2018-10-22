@@ -56,6 +56,7 @@ public class Peer {
     public Peer(Registration registration, String serverIPAddress) {
         this.ipAddress = registration.getIPAddress();
         this.friendlyName = registration.getFriendlyName();
+        this.port = registration.getPort();
         this.serverIPAddress = serverIPAddress;
     }
 
@@ -64,6 +65,10 @@ public class Peer {
             before("/*", (request, response) -> System.out.println("endpoint: " + request.pathInfo()));
             //`post("/register", this::registerPeer, gson::toJson);
             get("/name", this::getName, gson::toJson);
+            get("/heartbeat", (request, response) -> {
+                System.out.println("Heartbeat received");
+                return true;
+            });
         };
     }
 
@@ -153,6 +158,14 @@ public class Peer {
             // TODO this can be better
             System.out.println(e.getMessage());
         }
+    }
+
+    /**
+     * Get full address that allows for communication (i.e. http + IP + port).
+     * @return String - http + IP + port
+     */
+    public String getFullAddress() {
+        return "http://" + this.ipAddress + ":" + String.valueOf(this.port);
     }
 
     @Override

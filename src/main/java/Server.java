@@ -1,6 +1,7 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.api.ContentResponse;
 import spark.Request;
 import spark.Response;
 import spark.RouteGroup;
@@ -14,6 +15,8 @@ import static spark.Spark.post;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 public class Server {
@@ -59,7 +62,7 @@ public class Server {
         String requestIp = request.ip();
         
         // Invalid attempted registration
-        if (registrationIp != requestIp) {
+        if (!registrationIp.equals(requestIp)) {
             return false;
         }
 
@@ -75,6 +78,9 @@ public class Server {
 
         System.out.println(this.ipToPeerMap);
 
+        // TODO here for testing. Move this into thread and delete this function call
+        //boolean val = sendHeartbeat();
+        
         return true;
     }
 
@@ -89,4 +95,36 @@ public class Server {
 
         return peers;
     }
+
+    // TODO this is going to have to be multi-threaded. Create a thread on instantiation
+    // to handle heartbeat polling (every second? 5 seconds? minute?)
+    // For now, left as a standalone method for testing and simplicity
+    private boolean sendHeartbeat() {
+        boolean result = false;
+        try {
+            HttpClient client = new HttpClient();
+            client.start();
+            
+            ipToPeerMap.forEach((ip, peer) -> {
+                String url = Utilities.formURL(peer.getFullAddress(), Endpoint.PEER_HEARTBEAT);
+                System.out.println("Sending heartbeat (" + url + ")...");
+    
+                ContentResponse resp;
+                try {
+                    resp = client.GET(url);
+                    
+                    System.out.println("Response: " + resp.toString());
+                    System.out.println("Content: " + resp.getContentAsString());
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception ee) {
+            // TODO
+            ee.printStackTrace();
+        }
+
+        return result;
+    }
+    
 }
