@@ -85,6 +85,7 @@ public class Peer {
     /**
      * Register Peer with server by POSTing to the server's registration endpoint.
      */
+    // TODO move this to a sendPOSTRequest function in Utilities
     public void registerWithServer() {
         // Make registration packet
         Registration registrationPacket = new Registration(this.ipAddress, this.port, this.friendlyName);
@@ -120,17 +121,11 @@ public class Peer {
     public void fetchPeers() {
         try {
             // Send registration to server
-            HttpClient client = new HttpClient();
-            client.start();
-    
             String url = Utilities.formURL(this.serverIPAddress, Endpoint.SERVER_FETCH_PEERS);
             System.out.println("Fetching peers (" + url + ")...");
 
-            ContentResponse resp = client.GET(url);
+            ContentResponse resp = Utilities.sendGetRequest(url);
 
-            System.out.println("Response: " + resp.toString());
-            System.out.println("Content: " + resp.getContentAsString());
-           
         } catch (Exception e) {
             // TODO this can be better
             System.out.println(e.getMessage());
@@ -143,17 +138,11 @@ public class Peer {
     public void requestFromPeer(String peerUrl) {
         try {
             // Send registration to server
-            HttpClient client = new HttpClient();
-            client.start();
-
             String url = Utilities.formURL(peerUrl, Endpoint.PEER_REQUEST);
             System.out.println("Requesting from peer (" + url + ")...");
 
-            ContentResponse resp = client.GET(url);
+            ContentResponse resp = Utilities.sendGetRequest(url);
 
-            System.out.println("Response: " + resp.toString());
-            System.out.println("Content: " + resp.getContentAsString());
-           
         } catch (Exception e) {
             // TODO this can be better
             System.out.println(e.getMessage());
