@@ -79,7 +79,7 @@ public class Server {
         System.out.println(this.ipToPeerMap);
 
         // TODO here for testing. Move this into thread and delete this function call
-        //boolean val = sendHeartbeat();
+        boolean val = sendHeartbeat();
         
         return true;
     }
@@ -100,27 +100,22 @@ public class Server {
     // to handle heartbeat polling (every second? 5 seconds? minute?)
     // For now, left as a standalone method for testing and simplicity
     private boolean sendHeartbeat() {
-        boolean result = false;
+        boolean result = true;
         try {
-            HttpClient client = new HttpClient();
-            client.start();
-            
-            ipToPeerMap.forEach((ip, peer) -> {
+            for (Map.Entry<String, Peer> entry : ipToPeerMap.entrySet()) {
+                Peer peer = entry.getValue(); 
                 String url = Utilities.formURL(peer.getFullAddress(), Endpoint.PEER_HEARTBEAT);
+                
                 System.out.println("Sending heartbeat (" + url + ")...");
-    
-                ContentResponse resp;
-                try {
-                    resp = client.GET(url);
-                    
-                    System.out.println("Response: " + resp.toString());
-                    System.out.println("Content: " + resp.getContentAsString());
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    e.printStackTrace();
+                ContentResponse resp = Utilities.sendGetRequest(url);
+
+                boolean res = Boolean.parseBoolean(resp.getContentAsString());
+                if (res == false) {
+                    result = false;
                 }
-            });
+            }
         } catch (Exception ee) {
-            // TODO
+            // TODO better
             ee.printStackTrace();
         }
 
