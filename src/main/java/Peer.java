@@ -157,6 +157,10 @@ public class Peer {
         return "http://" + this.ipAddress + ":" + String.valueOf(this.port);
     }
 
+    public String getIpAddress() {
+        return this.ipAddress;
+    }
+
     @Override
     public String toString() {
         return this.ipAddress + ", " + this.friendlyName;
