@@ -1,3 +1,5 @@
+package peer;
+
 import java.net.InetAddress;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
@@ -14,6 +16,10 @@ import static spark.Spark.before;
 import static spark.Spark.get;
 import static spark.Spark.path;
 import static spark.Spark.port;
+
+import model.Registration;
+import util.Endpoint;
+import util.Utilities;
 
 
 public class Peer {
@@ -33,7 +39,7 @@ public class Peer {
     /**
      * Contruct Peer, where the Peer's IP is fetched from the machine. 
      */
-    Peer(String friendlyName, String serverIPAddress) {
+    public Peer(String friendlyName, String serverIPAddress) {
         this.friendlyName = friendlyName;
         this.serverIPAddress = serverIPAddress;
         

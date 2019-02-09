@@ -1,3 +1,7 @@
+package runner;
+
+import peer.Peer;
+
 public class PeerRunner {
     private static String friendlyName = "Matt's Lenovo";
     private static String serverIpAddress = "http://192.168.1.4:4567";

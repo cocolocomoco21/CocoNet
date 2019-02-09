@@ -1,3 +1,5 @@
+package model;
+
 import java.net.InetAddress;
 
 import com.google.gson.annotations.Expose;

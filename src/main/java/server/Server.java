@@ -1,3 +1,5 @@
+package server;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.eclipse.jetty.client.HttpClient;
@@ -19,6 +21,11 @@ import java.util.stream.Collectors;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import peer.Peer;
+import model.Registration;
+import util.Utilities;
+import util.Endpoint;
+
 public class Server {
     
     static final String CONTENT_TYPE_JSON = "application/json";
@@ -29,7 +36,7 @@ public class Server {
     private String serverIPAddress = "";
 
 
-    Server(String serverIPAddress) {
+    public Server(String serverIPAddress) {
         this.serverIPAddress = serverIPAddress;
         this.ipToPeerMap = new HashMap<String, Peer>();
         initializeRouting(4567);

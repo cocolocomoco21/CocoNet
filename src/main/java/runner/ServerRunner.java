@@ -1,3 +1,7 @@
+package runner;
+
+import server.Server;
+
 public class ServerRunner {
     private static String serverIPAddress = "192.168.1.3";
 
