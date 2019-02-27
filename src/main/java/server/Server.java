@@ -145,6 +145,8 @@ public class Server {
             System.out.println("Peer was not correctly removed");
         }
 
+        System.out.println(this.ipToPeerMap);
+
         return isRemoved;
     }
 
@@ -155,6 +157,14 @@ public class Server {
         response.type(CONTENT_TYPE_JSON);
 
         List<Peer> peers = ipToPeerMap.values().stream().collect(Collectors.toList());
+        
+        // If requester is not on list of peers (i.e. disconnected or not registered), don't return list
+        String requestIp = request.ip();
+        if (!peers.stream().anyMatch(i -> i.getIpAddress().equals(requestIp))) {
+            // TODO should return 404
+            return null;
+        }
+
         System.out.println("Returning peers: " + peers);
 
         return peers;

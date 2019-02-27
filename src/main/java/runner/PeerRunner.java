@@ -30,6 +30,10 @@ public class PeerRunner {
         peer.disconnectFromServer();
         System.out.println("Finished disconnecting from server\n");        
 
+        // Fetch peers (after disconnecting)
+        peer.fetchPeers();
+        System.out.println("Finished fetching peers\n");
+
         System.out.println("Peer running...");
 
     }

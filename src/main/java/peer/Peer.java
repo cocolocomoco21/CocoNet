@@ -49,6 +49,8 @@ public class Peer {
             System.out.println("Invalid IP");
         }
 
+        // TODO anytime you make a Peer object, it's going to try to open up networking. This prohibits you from using Peer as a data type alone
+        // Probably do something about this (I guess below constructor handles this but this implict definition and behavior is still weird)
         initializeRouting(this.port);
     }
 
