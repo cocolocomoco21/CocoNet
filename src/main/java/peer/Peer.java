@@ -91,30 +91,17 @@ public class Peer {
     /**
      * Register Peer with server by POSTing to the server's registration endpoint.
      */
-    // TODO move this to a sendPOSTRequest function in Utilities
     public void registerWithServer() {
         // Make registration packet
         Registration registrationPacket = new Registration(this.ipAddress, this.port, this.friendlyName);
         String json = new Gson().toJson(registrationPacket);
 
         try {
-            // Send registration to server
-            HttpClient client = new HttpClient();
-            client.start();
-    
             String url = Utilities.formURL(this.serverIPAddress, Endpoint.SERVER_REGISTER);
             System.out.println("Registering with server (" + url + ")...");
 
-            Request request = client.POST(url)
-                .header(HttpHeader.ACCEPT, CONTENT_TYPE_JSON)
-                .header(HttpHeader.CONTENT_TYPE, CONTENT_TYPE_JSON)
-                .content(new StringContentProvider(json), CONTENT_TYPE_JSON);
+            ContentResponse resp = Utilities.sendPOSTRequest(url, json);
 
-            ContentResponse resp = request.send();
-
-            System.out.println("Response: " + resp.toString());
-            System.out.println("Content: " + resp.getContentAsString());
-           
         } catch (Exception e) {
             // TODO this can be better
             System.out.println(e.getMessage());
@@ -130,7 +117,7 @@ public class Peer {
             String url = Utilities.formURL(this.serverIPAddress, Endpoint.SERVER_FETCH_PEERS);
             System.out.println("Fetching peers (" + url + ")...");
 
-            ContentResponse resp = Utilities.sendGetRequest(url);
+            ContentResponse resp = Utilities.sendGETRequest(url);
 
         } catch (Exception e) {
             // TODO this can be better
@@ -147,7 +134,7 @@ public class Peer {
             String url = Utilities.formURL(peerUrl, Endpoint.PEER_REQUEST);
             System.out.println("Requesting from peer (" + url + ")...");
 
-            ContentResponse resp = Utilities.sendGetRequest(url);
+            ContentResponse resp = Utilities.sendGETRequest(url);
 
         } catch (Exception e) {
             // TODO this can be better

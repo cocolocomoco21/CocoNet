@@ -132,7 +132,7 @@ public class Server {
         String url = Utilities.formURL(peer.getFullAddress(), Endpoint.PEER_HEARTBEAT);
                 
         System.out.println("Sending heartbeat (" + url + ")...");
-        ContentResponse resp = Utilities.sendGetRequest(url);
+        ContentResponse resp = Utilities.sendGETRequest(url);
 
         boolean result = resp != null && Boolean.parseBoolean(resp.getContentAsString());
         return result;

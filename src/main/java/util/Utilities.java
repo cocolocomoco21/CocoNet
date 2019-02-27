@@ -4,10 +4,15 @@ import java.util.List;
 
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.util.StringContentProvider;
+import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.util.StringUtil;
 
 
 public class Utilities {
+
+    static final String CONTENT_TYPE_JSON = "application/json";
     
     /**
      * Create endpoint.
@@ -46,7 +51,7 @@ public class Utilities {
     /**
      * Send GET request to specified URL.
      */
-    public static ContentResponse sendGetRequest(String url)  {
+    public static ContentResponse sendGETRequest(String url)  {
         ContentResponse resp;
         try {
             HttpClient client = new HttpClient();
@@ -63,6 +68,32 @@ public class Utilities {
             e.printStackTrace();
         }
         
+        return null;
+    }
+
+    public static ContentResponse sendPOSTRequest(String url, String json) {
+        try {
+            // Send registration to server
+            HttpClient client = new HttpClient();
+            client.start();
+    
+            Request request = client.POST(url)
+                .header(HttpHeader.ACCEPT, CONTENT_TYPE_JSON)
+                .header(HttpHeader.CONTENT_TYPE, CONTENT_TYPE_JSON)
+                .content(new StringContentProvider(json), CONTENT_TYPE_JSON);
+
+            ContentResponse resp = request.send();
+
+            System.out.println("Response: " + resp.toString());
+            System.out.println("Content: " + resp.getContentAsString());
+            
+            return resp;
+           
+        } catch (Exception e) {
+            // TODO this can be better
+            System.out.println(e.getMessage());
+        }
+
         return null;
     }
 }
