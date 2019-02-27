@@ -16,11 +16,18 @@ public class Registration {
     @Expose
     String friendlyName;
 
+    @Expose
+    PeerConnectionType peerConnectionType;
 
     public Registration(String ipAddress, int port, String friendlyName) {
+        this(ipAddress, port, friendlyName, PeerConnectionType.REGISTRATION);
+    }
+
+    public Registration(String ipAddress, int port, String friendlyName, PeerConnectionType peerConnectionType) {
         this.ipAddress = ipAddress;
         this.port = port;
         this.friendlyName = friendlyName;
+        this.peerConnectionType = peerConnectionType;
     }
 
     public boolean validate() {
@@ -65,5 +72,9 @@ public class Registration {
 
     public String getFriendlyName() {
         return this.friendlyName;
+    }
+
+    public PeerConnectionType getPeerConnectionType() {
+        return this.peerConnectionType;
     }
 }

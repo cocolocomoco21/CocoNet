@@ -6,6 +6,7 @@ public class Endpoint {
     private final static String SERVER_RESOURCE_PATH = "/server";
     public final static String SERVER_REGISTER = SERVER_RESOURCE_PATH + "/register";
     public final static String SERVER_FETCH_PEERS = SERVER_RESOURCE_PATH + "/";
+    public final static String SERVER_DISCONNECT = SERVER_RESOURCE_PATH + "/disconnect";
 
     // Peer constants
     private final static String PEER_RESOURCE_PATH = "/peer";

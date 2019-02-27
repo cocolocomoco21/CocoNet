@@ -3,12 +3,7 @@ package peer;
 import java.net.InetAddress;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
-import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
-import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.api.Response;
-import org.eclipse.jetty.client.util.StringContentProvider;
-import org.eclipse.jetty.http.HttpHeader;
 
 import spark.RouteGroup;
 
@@ -17,6 +12,7 @@ import static spark.Spark.get;
 import static spark.Spark.path;
 import static spark.Spark.port;
 
+import model.PeerConnectionType;
 import model.Registration;
 import util.Endpoint;
 import util.Utilities;
@@ -69,7 +65,7 @@ public class Peer {
     private RouteGroup routes() {
         return () ->  {
             before("/*", (request, response) -> System.out.println("endpoint: " + request.pathInfo()));
-            //`post("/register", this::registerPeer, gson::toJson);
+            //post("/register", this::registerPeer, gson::toJson);
             get("/name", this::getName, gson::toJson);
             get("/heartbeat", (request, response) -> {
                 System.out.println("Heartbeat received");
@@ -118,6 +114,26 @@ public class Peer {
             System.out.println("Fetching peers (" + url + ")...");
 
             ContentResponse resp = Utilities.sendGETRequest(url);
+
+        } catch (Exception e) {
+            // TODO this can be better
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Disconnect with server by POSTing to server's disconnect endpoint
+     */
+    public void disconnectFromServer() {
+        // Make registration packet
+        Registration registrationPacket = new Registration(this.ipAddress, this.port, this.friendlyName, PeerConnectionType.DISCONNECTION);
+        String json = new Gson().toJson(registrationPacket);
+
+        try {
+            String url = Utilities.formURL(this.serverIPAddress, Endpoint.SERVER_DISCONNECT);
+            System.out.println("Disconnecting with server (" + url + ")...");
+
+            ContentResponse resp = Utilities.sendPOSTRequest(url, json);
 
         } catch (Exception e) {
             // TODO this can be better

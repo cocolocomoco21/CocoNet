@@ -4,7 +4,7 @@ import peer.Peer;
 
 public class PeerRunner {
     private static String friendlyName = "Matt's Lenovo";
-    private static String serverIpAddress = "http://192.168.1.4:4567";
+    private static String serverIpAddress = "http://192.168.1.13:4567";
 
     public static void main(String[] args) {
         
@@ -25,6 +25,10 @@ public class PeerRunner {
         // Request to a peer
         peer.requestFromPeer("http://192.168.1.11:4568");
         System.out.println("Finished requesting from peer\n");
+
+        // Disconnect from server
+        peer.disconnectFromServer();
+        System.out.println("Finished disconnecting from server\n");        
 
         System.out.println("Peer running...");
 

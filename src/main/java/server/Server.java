@@ -21,8 +21,9 @@ import java.util.stream.Collectors;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import peer.Peer;
+import model.PeerConnectionType;
 import model.Registration;
+import peer.Peer;
 import util.Utilities;
 import util.Endpoint;
 
@@ -56,6 +57,7 @@ public class Server {
             before("/*", (request, response) -> System.out.println("endpoint: " + request.pathInfo()));
             post("/register", this::registerPeer, gson::toJson);
             get("/", this::fetchPeers, gson::toJson);
+            post("/disconnect", this::disconnectPeer, gson::toJson);
         };
     }
 
@@ -71,6 +73,12 @@ public class Server {
         response.type(CONTENT_TYPE_JSON);
 
         Registration registration = gson.fromJson(request.body(), new TypeToken<Registration>() {}.getType());
+        
+        // If not REGISTRATION packet, don't handle
+        if (registration.getPeerConnectionType() != PeerConnectionType.REGISTRATION) {
+            return false;
+        }
+        
         if (!registration.validate()) {
             return false;
         }
@@ -95,6 +103,49 @@ public class Server {
         System.out.println(this.ipToPeerMap);
 
         return true;
+    }
+
+    
+    /**
+     * Attempt to disconnect a Peer, handle the POST request to do so.  
+     */
+    private boolean disconnectPeer(Request request, Response response) {
+        response.type(CONTENT_TYPE_JSON);
+
+        Registration registration = gson.fromJson(request.body(), new TypeToken<Registration>() {}.getType());
+        
+        // If not DISCONNECTION packet, don't handle
+        if (registration.getPeerConnectionType() != PeerConnectionType.DISCONNECTION) {
+            return false;
+        }        
+        
+        if (!registration.validate()) {
+            return false;
+        }
+
+        String registrationIp = registration.getIPAddress();
+        String requestIp = request.ip();
+        
+        // Invalid attempted registration
+        if (!registrationIp.equals(requestIp)) {
+            return false;
+        }
+
+        // Not already registered - can't remove
+        if (!this.ipToPeerMap.containsKey(registrationIp)) {
+            return false;
+        }
+
+        // Remove peer
+        Peer peer = new Peer(registration, serverIPAddress);
+        boolean isRemoved = removePeer(peer);
+        if (!isRemoved) {
+            // TODO error handle
+            //throw new Exception("Peer was not correctly removed");
+            System.out.println("Peer was not correctly removed");
+        }
+
+        return isRemoved;
     }
 
     /**
